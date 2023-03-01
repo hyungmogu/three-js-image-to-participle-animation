@@ -94,4 +94,3 @@ class ImageToParticle {
 
 new ImageToParticle();
 
-//
