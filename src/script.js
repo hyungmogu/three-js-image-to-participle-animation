@@ -5,6 +5,9 @@ import {
 import * as dat from 'lil-gui'
 
 class ImageToParticle {
+    static OPTIONS = {
+        count: 1000
+    }
     constructor() {
         this.gui;
         this.canvas;
@@ -13,14 +16,14 @@ class ImageToParticle {
         this.init();
     }
 
-    handleLoadImage() {
+    handleGenerateImage() {
         this.image = new Image();
         this.image.src = "./assets/images/moradcreativeLogo.png";
         this.image.onload = () => {
             const ctx = this.canvas.getContext("2d");
 
-            this.canvas.width = this.image.width;
-            this.canvas.height = this.image.width;
+            this.canvas.width = this.image.width * 4;
+            this.canvas.height = this.image.width * 4;
 
             ctx.drawImage(this.image, 0, 0);
             const data = ctx.getImageData(0, 0, this.image.width, this.image.height);
@@ -29,10 +32,11 @@ class ImageToParticle {
             const particles = [];
             for (let y = 0, y2 = data.height; y < y2; y++) {
                 for (let x = 0, x2 = data.width; x < x2; x++) {
-                    if (data.data[(y * 4 * data.width) + (x * 4) + 3] > 128) {
+                    const alpha = data.data[(x * 4 + y * 4 * data.width) + 3];
+                    if (alpha > 128) {
                         const particle = {
-                            x: x,
-                            y: y
+                            x: x + Math.random(),
+                            y: y + Math.random()
                         };
                         particles.push(particle);
                     }
@@ -63,7 +67,7 @@ class ImageToParticle {
         this.handleLoadGUI();
         this.handleLoadCanvas();
         this.handleLoadScene();
-        this.handleLoadImage();
+        this.handleGenerateImage();
     }
 }
 
